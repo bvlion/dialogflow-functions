@@ -1,0 +1,28 @@
+{
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "lint": "eslint .",
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "actions-on-google": "^2.13.0",
+    "axios": "^v0.21.1",
+    "dialogflow": "^1.2.0",
+    "dialogflow-fulfillment": "^0.6.1",
+    "firebase-admin": "^9.4.2",
+    "firebase-functions": "^3.13.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.16.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "firebase-functions-test": "^0.2.3"
+  },
+  "private": true
+}
