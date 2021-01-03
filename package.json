@@ -1,0 +1,8 @@
+{
+  "name": "firebase-tools",
+  "description": "save firebase-tools",
+  "devDependencies": {
+    "firebase-tools": "^9.1.0"
+  },
+  "private": true
+}
