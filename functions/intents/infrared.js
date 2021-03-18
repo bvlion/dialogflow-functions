@@ -19,7 +19,7 @@ async function sleep(admin, agent) {
     .then((res) => console.log(res))
     .catch((error) => console.log('time-notification ' + error.message))
   // 夏は「 aircon:cool28sleep 」
-  infrared(admin, '" ' + new Date() + ' … aircon:off … 1 "')
+  infrared(admin, '" ' + new Date() + ' … living:light … 1 "')
   agent.add('眠りの音楽を再生します')
 }
 
