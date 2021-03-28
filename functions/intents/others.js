@@ -6,7 +6,7 @@ module.exports.discomfort = (admin, agent) => discomfort(admin, agent)
 const axios = require('axios')
 
 async function bus_scraping(admin, agent) {
-  const location = agent.parameters.location
+  const location = agent.parameters.location['business-name']
   let param = ''
   if (location == '秋葉原') {
     param = '&data=1'
