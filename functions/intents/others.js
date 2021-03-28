@@ -6,13 +6,13 @@ module.exports.discomfort = (admin, agent) => discomfort(admin, agent)
 const axios = require('axios')
 
 async function bus_scraping(admin, agent) {
-  const location = agent.parameters.location['business-name']
+  const location = agent.parameters.location
   let param = ''
   if (location == '秋葉原') {
     param = '&data=1'
-  } else if (location != '錦糸町') {
+  } else if (location == '錦糸町') {
     param = '&data=2'
-  } else if (location != '門仲' || location != '門前仲町') {
+  } else if (location == '門仲' || location == '門前仲町') {
     param = '&data=3'
   } else {
     agent.add(location + 'は対象外です。現在バスの確認は秋葉原行き、錦糸町行き、門前仲町行きのみに対応しています。')
