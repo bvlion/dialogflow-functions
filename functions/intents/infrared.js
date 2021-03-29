@@ -12,36 +12,42 @@ async function infrared(admin, param) {
     .catch((error) => console.log('time-notification ' + error.message))
 }
 
+async function remo(urlName, param = null) {
+  const remoToken = (await admin.database().ref('/remo/token').once('value')).val()
+  const url = (await admin.database().ref('/remo/url/' + urlName).once('value')).val()
+  axios.post(url, param, {
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + remoToken
+    }
+  }).then((res) => console.log(res))
+}
+
+function createAirconParams(temp, volume) {
+  var params = new URLSearchParams()
+  params.append('temperature', temp)
+  params.append('air_volume', volume)
+  params.append('operation_mode', 'cool')
+  return params
+}
+
 async function sleep(admin, agent) {
-  infrared(admin, '" ' + new Date() + ' … room:power … 2 "')
   const url = (await admin.database().ref('/url/play-sleep-music').once('value')).val()
   axios.put(url)
     .then((res) => console.log(res))
     .catch((error) => console.log('time-notification ' + error.message))
-  // 夏は「 aircon:cool28sleep 」
+  // remo('aircon-on', createAirconParams('29', '2')) // 夏用
   infrared(admin, '" ' + new Date() + ' … living:light … 1 "')
   agent.add('眠りの音楽を再生します')
 }
 
 async function morning(admin, agent) {
-  infrared(admin, '" ' + new Date() + ' … room:power … 1 "')
   const url = (await admin.database().ref('/url/time-notification').once('value')).val()
   const res = await axios.get(url)
+  infrared(admin, '" ' + new Date() + ' … living:light … 1 "')
+  // remo('aircon-on', createAirconParams('26', 'auto')) // 夏戻す用
   if (res.data == 1) {
-    infrared(admin, '" ' + new Date() + ' … compo:cd … 1 "')
+    remo('CD')
     agent.add('CDコンポを操作します')
-  } else {
-    infrared(admin, '" ' + new Date() + ' … aircon:hot20 … 1 "')
-    agent.add('暖房を二十度で起動します')
   }
-}
-
-function compo(admin, agent) {
-  infrared(admin, '" ' + new Date() + ' … compo:power … 1 "')
-  agent.add('コンポの電源を操作します')
-}
-
-function cd(admin, agent) {
-  infrared(admin, '" ' + new Date() + ' … compo:cd … 1 "')
-  agent.add('CDコンポを操作します')
 }
