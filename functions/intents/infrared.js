@@ -21,6 +21,7 @@ async function remo(urlName, param = null) {
       'Authorization': 'Bearer ' + remoToken
     }
   }).then((res) => console.log(res))
+    .catch((error) => console.log(error))
 }
 
 function createAirconParams(temp, volume) {
