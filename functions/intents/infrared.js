@@ -13,8 +13,11 @@ async function infrared(admin, param) {
 }
 
 async function remo(admin, urlName, param = null) {
+  console.log('urlName' + urlName)
   const remoToken = (await admin.database().ref('/remo/token').once('value')).val()
+  console.log('remoToken' + remoToken)
   const url = (await admin.database().ref('/remo/url/' + urlName).once('value')).val()
+  console.log('url' + url)
   axios.post(url, param, {
     headers: {
       'Accept': 'application/json',
