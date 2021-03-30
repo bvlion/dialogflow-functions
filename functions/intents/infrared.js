@@ -12,7 +12,7 @@ async function infrared(admin, param) {
     .catch((error) => console.log('infrared ' + error.message))
 }
 
-async function remo(urlName, param = null) {
+async function remo(admin, urlName, param = null) {
   const remoToken = (await admin.database().ref('/remo/token').once('value')).val()
   const url = (await admin.database().ref('/remo/url/' + urlName).once('value')).val()
   axios.post(url, param, {
@@ -37,7 +37,7 @@ async function sleep(admin, agent) {
   axios.put(url)
     .then((res) => console.log(res))
     .catch((error) => console.log('play-sleep-music ' + error.message))
-  // remo('aircon-on', createAirconParams('29', '2')) // 夏用
+  // remo(admin, 'aircon-on', createAirconParams('29', '2')) // 夏用
   infrared(admin, '" ' + new Date() + ' … living:light … 1 "')
   agent.add('眠りの音楽を再生します')
 }
@@ -46,9 +46,9 @@ async function morning(admin, agent) {
   const url = (await admin.database().ref('/url/time-notification').once('value')).val()
   const res = await axios.get(url)
   if (res.data == 1) {
-    remo('CD')
+    remo(admin, 'CD')
     agent.add('CDコンポを操作します')
   }
-  // remo('aircon-on', createAirconParams('26', 'auto')) // 夏戻す用
+  // remo(admin, 'aircon-on', createAirconParams('26', 'auto')) // 夏戻す用
   infrared(admin, '" ' + new Date() + ' … living:light … 1 "')
 }
