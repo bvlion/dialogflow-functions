@@ -12,8 +12,14 @@ async function infrared(admin, param) {
     .catch((error) => console.log('infrared ' + error.message))
 }
 
+async function curtainOpen(admin) {
+  const url = (await admin.database().ref('/url/curtain').once('value')).val()
+  axios.put(url, '"open ' + new Date() + '"')
+    .then((res) => console.log(res))
+    .catch((error) => console.log('curtain ' + error.message))
+}
+
 async function remo(admin, urlName, param = null) {
-  console.log('urlName' + urlName)
   const remoToken = (await admin.database().ref('/remo/token').once('value')).val()
   console.log('remoToken' + remoToken)
   const url = (await admin.database().ref('/remo/url/' + urlName).once('value')).val()
@@ -51,6 +57,9 @@ async function morning(admin, agent) {
   if (res.data == 1) {
     remo(admin, 'CD')
     agent.add('CDコンポを操作します')
+  } else {
+    curtainOpen(admin)
+    agent.add('照明を操作します')
   }
   // remo(admin, 'aircon-on', createAirconParams('26', 'auto')) // 夏戻す用
   infrared(admin, '" ' + new Date() + ' … living:light … 1 "')
