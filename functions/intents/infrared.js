@@ -54,7 +54,7 @@ async function sleep(admin, agent) {
 async function morning(admin, agent) {
   const url = (await admin.database().ref('/url/time-notification').once('value')).val()
   const res = await axios.get(url)
-  if (res.data == 0) {
+  if (res.data == '1') {
     remo(admin, 'CD')
     agent.add('CDコンポを操作します')
   } else {
