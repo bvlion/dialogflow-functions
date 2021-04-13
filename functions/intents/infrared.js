@@ -52,9 +52,10 @@ async function sleep(admin, agent) {
 }
 
 async function morning(admin, agent) {
+  infrared(admin, '" ' + new Date() + ' … living:light … 1 "')
   const url = (await admin.database().ref('/url/time-notification').once('value')).val()
   const res = await axios.get(url)
-  if (res.data == '1') {
+  if (res.data == 1) {
     remo(admin, 'CD')
     agent.add('CDコンポを操作します')
   } else {
@@ -62,5 +63,4 @@ async function morning(admin, agent) {
     agent.add('照明を操作します')
   }
   // remo(admin, 'aircon-on', createAirconParams('26', 'auto')) // 夏戻す用
-  infrared(admin, '" ' + new Date() + ' … living:light … 1 "')
 }
