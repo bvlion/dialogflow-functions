@@ -55,7 +55,9 @@ async function morning(admin, agent) {
   infrared(admin, '" ' + new Date() + ' … living:light … 1 "')
   const url = (await admin.database().ref('/url/time-notification').once('value')).val()
   const res = await axios.get(url)
-  if (res.data == 1) {
+  const target = res.data
+  console.log('target: ' + target)
+  if (target == 1) {
     remo(admin, 'CD')
     agent.add('CDコンポを操作します')
   } else {
