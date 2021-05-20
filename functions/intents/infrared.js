@@ -48,15 +48,19 @@ async function sleep(admin, agent) {
     .catch((error) => console.log('play-sleep-music ' + error.message))
   // remo(admin, 'aircon-on', createAirconParams('29', '2')) // 夏用
   infrared(admin, '" ' + new Date() + ' … living:light … 1 "')
+  infrared(admin, '" ' + new Date() + ' … living:fan_stop … 1 "')
   agent.add('眠りの音楽を再生します')
 }
 
 async function morning(admin, agent) {
   infrared(admin, '" ' + new Date() + ' … living:light … 1 "')
+  infrared(admin, '" ' + new Date() + ' … living:fan_1 … 1 "')
   const url = (await admin.database().ref('/url/time-notification').once('value')).val()
+  console.log('target url: ' + url)
   const res = await axios.get(url)
   const target = res.data
-  console.log('target: ' + target)
+  console.log('target res: ' + res)
+  console.log('target val: ' + target)
   if (target == 1) {
     remo(admin, 'CD')
     agent.add('CDコンポを操作します')
