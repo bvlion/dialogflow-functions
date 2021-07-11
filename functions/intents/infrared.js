@@ -46,7 +46,7 @@ async function sleep(admin, agent) {
   axios.put(url)
     .then((res) => console.log(res))
     .catch((error) => console.log('play-sleep-music ' + error.message))
-  // remo(admin, 'aircon-on', createAirconParams('29', '2')) // 夏用
+  remo(admin, 'aircon-on', createAirconParams('26', '2')) // 夏用
   infrared(admin, '" ' + new Date() + ' … living:light … 1 "')
   infrared(admin, '" ' + new Date() + ' … living:fan_stop … 1 "')
   agent.add('眠りの音楽を再生します')
@@ -68,5 +68,5 @@ async function morning(admin, agent) {
     curtainOpen(admin)
     agent.add('照明を操作します')
   }
-  // remo(admin, 'aircon-on', createAirconParams('26', 'auto')) // 夏戻す用
+  remo(admin, 'aircon-on', createAirconParams('24', 'auto')) // 夏戻す用
 }
