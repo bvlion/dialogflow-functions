@@ -61,6 +61,7 @@ async function morning(admin, agent) {
   const target = res.data
   console.log('target res: ' + res)
   console.log('target val: ' + target)
+  remo(admin, 'aircon-on', createAirconParams('24', 'auto')) // 夏戻す用
   if (target == 1) {
     remo(admin, 'CD')
     agent.add('CDコンポを操作します')
@@ -68,5 +69,4 @@ async function morning(admin, agent) {
     curtainOpen(admin)
     agent.add('照明を操作します')
   }
-  remo(admin, 'aircon-on', createAirconParams('24', 'auto')) // 夏戻す用
 }
