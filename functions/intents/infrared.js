@@ -36,8 +36,8 @@ async function remo(admin, urlName, param = null) {
 function createAirconParams(temp, volume) {
   var params = new URLSearchParams()
   params.append('temperature', temp)
-  params.append('air_volume', volume)
-  params.append('operation_mode', 'cool')
+//   params.append('air_volume', volume)
+//   params.append('operation_mode', 'cool')
   return params
 }
 
@@ -46,7 +46,7 @@ async function sleep(admin, agent) {
   axios.put(url)
     .then((res) => console.log(res))
     .catch((error) => console.log('play-sleep-music ' + error.message))
-  remo(admin, 'aircon-on', createAirconParams('26', '2')) // 夏用
+  remo(admin, 'aircon-on', createAirconParams('25', '2')) // 夏用
   infrared(admin, '" ' + new Date() + ' … living:light … 1 "')
   infrared(admin, '" ' + new Date() + ' … living:fan_stop … 1 "')
   agent.add('眠りの音楽を再生します')
