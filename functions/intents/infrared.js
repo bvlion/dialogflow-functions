@@ -1,5 +1,6 @@
 module.exports.sleep = (admin, agent) => sleep(admin, agent)
 module.exports.morning = (admin, agent) => morning(admin, agent)
+module.exports.living = (admin, agent) => livingSet(admin, agent)
 module.exports.compo = (admin, agent) => compo(admin, agent)
 module.exports.cd = (admin, agent) => cd(admin, agent)
 
@@ -46,7 +47,7 @@ async function sleep(admin, agent) {
   axios.put(url)
     .then((res) => console.log(res))
     .catch((error) => console.log('play-sleep-music ' + error.message))
-  remo(admin, 'aircon-on', createAirconParams('26', 'auto')) // 夏用
+  remo(admin, 'aircon-on', createAirconParams('25', 'auto')) // 夏用
   infrared(admin, '" ' + new Date() + ' … living:light … 1 "')
   infrared(admin, '" ' + new Date() + ' … living:fan_stop … 1 "')
   agent.add('眠りの音楽を再生します')

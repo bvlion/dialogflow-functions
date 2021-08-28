@@ -14,7 +14,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
   intentMap.set('save', () => require('./intents/save')(admin, agent))
   intentMap.set('sleep', () => infrared.sleep(admin, agent))
-  intentMap.set('living', () => infrared.livingSet(admin, agent))
+  intentMap.set('living', () => infrared.living(admin, agent))
   intentMap.set('morning', () => infrared.morning(admin, agent))
   intentMap.set('compo', () => infrared.compo(admin, agent))
   intentMap.set('cd', () => infrared.cd(admin, agent))
