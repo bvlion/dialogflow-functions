@@ -52,9 +52,17 @@ async function sleep(admin, agent) {
   agent.add('眠りの音楽を再生します')
 }
 
-async function morning(admin, agent) {
+async function livingSet(admin, agent) {
   infrared(admin, '" ' + new Date() + ' … living:light … 1 "')
-  infrared(admin, '" ' + new Date() + ' … living:fan_1 … 1 "')
+  infrared(admin, '" ' + new Date() + ' … living:fan_2 … 1 "')
+  infrared(admin, '" ' + new Date() + ' … living:fan_reverse … 1 "')
+  if (agent != null) {
+    agent.add('リビングの照明を操作します')
+  }
+}
+
+async function morning(admin, agent) {
+  livingSet(admin, null)
   const url = (await admin.database().ref('/url/time-notification').once('value')).val()
   console.log('target url: ' + url)
   const res = await axios.get(url)
