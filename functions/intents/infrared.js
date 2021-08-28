@@ -56,7 +56,7 @@ async function livingSet(admin, agent) {
   infrared(admin, '" ' + new Date() + ' … living:light … 1 "')
   infrared(admin, '" ' + new Date() + ' … living:fan_2 … 1 "')
   infrared(admin, '" ' + new Date() + ' … living:fan_reverse … 1 "')
-  if (agent != null) {
+  if (agent !== null) {
     agent.add('リビングの照明を操作します')
   }
 }
