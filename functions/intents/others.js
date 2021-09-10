@@ -28,16 +28,11 @@ async function setholiday(admin, agent) {
   const dates = agent.parameters.dates
   const holidays = agent.parameters.holidays
 
-  let dates_id = 0
   let holiday_id = 0
+  let nowDate = new Date()
 
-  switch (dates) {
-    case '今日':
-    dates_id = 1
-    break
-    case '明日':
-    dates_id = 2
-    break
+  if (dates == '明日') {
+    nowDate.setDate(nowDate.getDate() + 1)
   }
 
   switch (holidays) {
@@ -48,9 +43,17 @@ async function setholiday(admin, agent) {
     holiday_id = 1
     break
   }
+  
+  let nowYear = nowDate.getFullYear()
+  let nowMonth = nowDate.getMonth() + 1
+  let nowDay = nowDate.getDate()
 
-  const url = (await admin.database().ref('/url/set-holiday').once('value')).val()
-  axios.post(url, {date: dates_id, holiday: holiday_id})
+  const url = (await admin.database().ref('/holidays-webhook/holiday-update-url').once('value')).val()
+  const token = (await admin.database().ref('/holidays-webhook/token').once('value')).val()
+  axios.post(url, {
+    headers: { 'Authorization': 'Bearer ' + token },
+    data: {date: nowYear + '-' + nowMonth + '-' + nowDay, holiday: holiday_id, type: 'group'}
+  })
     .then((res) => console.log(res))
     .catch((error) => console.log(error))
 
