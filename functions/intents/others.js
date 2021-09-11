@@ -50,9 +50,11 @@ async function setholiday(admin, agent) {
 
   const url = (await admin.database().ref('/holidays-webhook/holiday-update-url').once('value')).val()
   const token = (await admin.database().ref('/holidays-webhook/token').once('value')).val()
+  axios.defaults.headers.common['Authorization'] ='Bearer ' + token
   axios.post(url, {
-    headers: { 'Authorization': 'Bearer ' + token },
-    data: {date: nowYear + '-' + nowMonth + '-' + nowDay, holiday: holiday_id, type: 'group'}
+    date: nowYear + '-' + nowMonth + '-' + nowDay,
+    holiday: holiday_id,
+    type: 'group'
   })
     .then((res) => console.log(res))
     .catch((error) => console.log(error))
