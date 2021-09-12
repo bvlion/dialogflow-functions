@@ -64,12 +64,23 @@ async function livingSet(admin, agent) {
 
 async function morning(admin, agent) {
   livingSet(admin, null)
-  const url = (await admin.database().ref('/url/time-notification').once('value')).val()
-  console.log('target url: ' + url)
+
+  const nowDate = new Date()
+  const nowYear = nowDate.getFullYear()
+  const nowMonth = nowDate.getMonth() + 1
+  const nowDay = nowDate.getDate()
+  const nowHoliday = nowDate.getDay() == 0 || nowDate.getDay() == 6
+
+  const url = (await admin.database().ref('/holidays-webhook/get-calendar').once('value')).val()
+    + nowYear + '-' + nowMonth + '-' + nowDay
+  const token = (await admin.database().ref('/holidays-webhook/token').once('value')).val()
+  axios.defaults.headers.common['Authorization'] ='Bearer ' + token
   const res = await axios.get(url)
-  const target = res.data
-  console.log('target res: ' + res)
-  console.log('target val: ' + target)
+  const target = res.holiday
+  if (target) {
+    nowHoliday = target;
+  }
+
 //   remo(admin, 'aircon-on', createAirconParams('24', 'auto')) // 夏戻す用
   if (target == 1) {
     remo(admin, 'CD')
