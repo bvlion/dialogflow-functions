@@ -69,24 +69,26 @@ async function morning(admin, agent) {
   const nowYear = nowDate.getFullYear()
   const nowMonth = nowDate.getMonth() + 1
   const nowDay = nowDate.getDate()
-  const nowHoliday = nowDate.getDay() == 0 || nowDate.getDay() == 6
+  let nowHoliday = nowDate.getDay() == 0 || nowDate.getDay() == 6
 
   const url = (await admin.database().ref('/holidays-webhook/get-calendar').once('value')).val()
     + nowYear + '-' + nowMonth + '-' + nowDay
   const token = (await admin.database().ref('/holidays-webhook/token').once('value')).val()
-  axios.defaults.headers.common['Authorization'] ='Bearer ' + token
+  axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
   const res = await axios.get(url)
-  const target = res.holiday
-  if (target) {
-    nowHoliday = target;
+  if (res.data.holiday) {
+    nowHoliday = true;
+  }
+  if (res.data.force) {
+    nowHoliday = true;
   }
 
 //   remo(admin, 'aircon-on', createAirconParams('24', 'auto')) // 夏戻す用
-  if (target == 1) {
-    remo(admin, 'CD')
-    agent.add('CDコンポを操作します')
-  } else {
+  if (nowHoliday) {
     curtainOpen(admin)
     agent.add('照明を操作します')
+  } else {
+    remo(admin, 'CD')
+    agent.add('CDコンポを操作します')
   }
 }
