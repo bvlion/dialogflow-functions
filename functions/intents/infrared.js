@@ -15,7 +15,7 @@ async function infrared(admin, param) {
 
 async function curtainOpen(admin) {
   const url = (await admin.database().ref('/url/curtain').once('value')).val()
-  axios.put(url, "open " + new Date())
+  axios.put(url, '"open ' + new Date() + '"')
     .then((res) => console.log(res))
     .catch((error) => console.log('curtain ' + error.message))
 }
@@ -49,12 +49,12 @@ async function sleep(admin, agent) {
     .catch((error) => console.log('play-sleep-music ' + error.message))
 //   remo(admin, 'aircon-on', createAirconParams('26', 'auto')) // 夏用
   infrared(admin, '" ' + new Date() + ' … living:light … 1 "')
-  // infrared(admin, '" ' + new Date() + ' … living:fan_stop … 1 "')
+  infrared(admin, '" ' + new Date() + ' … living:fan_stop … 1 "')
   agent.add('眠りの音楽を再生します')
 }
 
 async function livingSet(admin, agent) {
-  // infrared(admin, '" ' + new Date() + ' … living:fan_2 … 1 "')
+  infrared(admin, '" ' + new Date() + ' … living:fan_2 … 1 "')
   // infrared(admin, '" ' + new Date() + ' … living:fan_reverse … 1 "')
   infrared(admin, '" ' + new Date() + ' … living:light … 1 "')
   if (agent !== null) {
