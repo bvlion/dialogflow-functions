@@ -15,9 +15,13 @@ async function infrared(admin, param) {
 
 async function curtainOpen(admin) {
   const url = (await admin.database().ref('/url/curtain').once('value')).val()
+
   axios.put(url, '"open ' + new Date() + '"')
     .then((res) => console.log(res))
-    .catch((error) => console.log('curtain ' + error.message))
+    .catch((error) => {
+      console.log('curtain ' + error.message)
+      console.log(error)
+    })
 }
 
 async function remo(admin, urlName, param = null) {
