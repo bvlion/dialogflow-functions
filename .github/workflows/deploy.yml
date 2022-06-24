@@ -1,0 +1,36 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+
+    - name: Set up .firebaserc
+      run: echo -e "{\n  \"projects\":{\n    \"default\":\"${{ secrets.FIREBASE_PJ }}\"\n  }\n}" > .firebaserc
+
+    - name: Set up firebase-tools
+      run: npm install --save-dev firebase-tools
+
+    - name: Cache node_modules dev packages
+      uses: actions/cache@v1
+      with:
+        path: ~/node_modules
+        key: ${{ runner.os }}-node-dev-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-dev-
+
+    - name: Deploy to Firebase
+      run: node_modules/.bin/firebase deploy --project "${{ secrets.FIREBASE_PJ }}" --token "${{ secrets.FIREBASE_TOKEN }}"
