@@ -17,12 +17,15 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@v2
+      
+    - name: npm install
+      run: cd functions && npm install
+
+    - name: Install firebase-tools
+      run : npm install
 
     - name: Set up .firebaserc
       run: echo -e "{\n  \"projects\":{\n    \"default\":\"${{ secrets.FIREBASE_PJ }}\"\n  }\n}" > .firebaserc
-
-    - name: Set up firebase-tools
-      run: npm install --save-dev firebase-tools
 
     - name: Cache node_modules dev packages
       uses: actions/cache@v1
@@ -33,4 +36,4 @@ jobs:
           ${{ runner.os }}-node-dev-
 
     - name: Deploy to Firebase
-      run: node_modules/.bin/firebase deploy --project "${{ secrets.FIREBASE_PJ }}" --token "${{ secrets.FIREBASE_TOKEN }}"
+      run: node_modules/.bin/firebase deploy --only functions --project "${{ secrets.FIREBASE_PJ }}" --token "${{ secrets.FIREBASE_TOKEN }}"
