@@ -1,0 +1,8 @@
+version: 2
+updates:
+
+  # npm の依存関係を維持する
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
