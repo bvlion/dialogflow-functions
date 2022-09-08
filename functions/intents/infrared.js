@@ -1,8 +1,10 @@
 module.exports.sleep = (admin, agent) => sleep(admin, agent)
 module.exports.morning = (admin, agent) => morning(admin, agent)
 module.exports.living = (admin, agent) => livingSet(admin, agent)
+module.exports.livingOff = (admin, agent) => livingOff(admin, agent)
 module.exports.compo = (admin, agent) => compo(admin, agent)
 module.exports.cd = (admin, agent) => cd(admin, agent)
+module.exports.switchOn = (admin, agent) => switchOn(admin, agent)
 
 const axios = require('axios')
 
@@ -51,10 +53,25 @@ async function sleep(admin, agent) {
   axios.put(url)
     .then((res) => console.log(res))
     .catch((error) => console.log('play-sleep-music ' + error.message))
-   remo(admin, 'aircon-on', createAirconParams('26', 'auto')) // 夏用
+  // remo(admin, 'aircon-on', createAirconParams('26', 'auto')) // 夏用
+  livingOff(admin, null)
+  agent.add('眠りの音楽を再生します')
+}
+
+async function switchOn(admin, agent) {
+  const url = (await admin.database().ref('/url/plasmacluster').once('value')).val()
+  axios.put(url, '"' + new Date() + '"')
+    .then((res) => console.log(res))
+    .catch((error) => console.log('infrared ' + error.message))
+  agent.add('スイッチボットを操作します')
+}
+
+async function livingOff(admin, agent) {
   infrared(admin, '" ' + new Date() + ' … living:light … 1 "')
   infrared(admin, '" ' + new Date() + ' … living:fan_stop … 1 "')
-  agent.add('眠りの音楽を再生します')
+  if (agent !== null) {
+    agent.add('リビングの照明を操作します')
+  }
 }
 
 async function livingSet(admin, agent) {
