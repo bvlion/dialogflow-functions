@@ -1,19 +1,17 @@
-module.exports.sleep = (admin, agent) => sleep(admin, agent)
 module.exports.morning = (admin, agent) => morning(admin, agent)
 module.exports.living = (admin, agent) => livingSet(admin, agent)
 module.exports.livingOff = (admin, agent) => livingOff(admin, agent)
-module.exports.compo = (admin, agent) => compo(admin, agent)
 module.exports.cd = (admin, agent) => cd(admin, agent)
 module.exports.switchOn = (admin, agent) => switchOn(admin, agent)
 
 const axios = require('axios')
 
-async function infrared(admin, param) {
-  const url = (await admin.database().ref('/url/infrared').once('value')).val()
-  axios.put(url, param)
-    .then((res) => console.log(res))
-    .catch((error) => console.log('infrared ' + error.message))
-}
+// async function infrared(admin, param) {
+//   const url = (await admin.database().ref('/url/infrared').once('value')).val()
+//   axios.put(url, param)
+//     .then((res) => console.log(res))
+//     .catch((error) => console.log('infrared ' + error.message))
+// }
 
 async function curtainOpen(admin) {
   const url = (await admin.database().ref('/url/curtain').once('value')).val()
@@ -40,24 +38,6 @@ async function remo(admin, urlName, param = null) {
     .catch((error) => console.log(error))
 }
 
-function createAirconParams(temp, volume) {
-  var params = new URLSearchParams()
-  params.append('temperature', temp)
-  params.append('air_volume', volume)
-  params.append('operation_mode', 'cool')
-  return params
-}
-
-async function sleep(admin, agent) {
-  const url = (await admin.database().ref('/url/play-sleep-music').once('value')).val()
-  axios.put(url)
-    .then((res) => console.log(res))
-    .catch((error) => console.log('play-sleep-music ' + error.message))
-  // remo(admin, 'aircon-on', createAirconParams('26', 'auto')) // 夏用
-  livingOff(admin, null)
-  agent.add('眠りの音楽を再生します')
-}
-
 async function switchOn(admin, agent) {
   const url = (await admin.database().ref('/url/plasmacluster').once('value')).val()
   axios.put(url, '"' + new Date() + '"')
@@ -67,17 +47,25 @@ async function switchOn(admin, agent) {
 }
 
 async function livingOff(admin, agent) {
-  infrared(admin, '" ' + new Date() + ' … living:light … 1 "')
-  infrared(admin, '" ' + new Date() + ' … living:fan_stop … 1 "')
+  remo(admin, 'fan_off')
+  remo(admin, 'living_light')
   if (agent !== null) {
     agent.add('リビングの照明を操作します')
   }
 }
 
 async function livingSet(admin, agent) {
-  infrared(admin, '" ' + new Date() + ' … living:fan_2 … 1 "')
-  infrared(admin, '" ' + new Date() + ' … living:fan_reverse … 1 "')
-  infrared(admin, '" ' + new Date() + ' … living:light … 1 "')
+  remo(admin, 'living_light')
+
+  const power = '1'
+
+  remo(admin, 'fan_' + power)
+  // 以下、冬場はコメントアウト
+  remo(admin, 'fan_reverse')
+  remo(admin, 'fan_off')
+  remo(admin, 'fan_' + power)
+  remo(admin, 'fan_reverse')
+
   if (agent !== null) {
     agent.add('リビングの照明を操作します')
   }
@@ -104,7 +92,6 @@ async function morning(admin, agent) {
     nowHoliday = true;
   }
 
-//   remo(admin, 'aircon-on', createAirconParams('24', 'auto')) // 夏戻す用
   if (nowHoliday) {
     curtainOpen(admin)
     agent.add('照明を操作します')
