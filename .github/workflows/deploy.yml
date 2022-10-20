@@ -10,7 +10,9 @@ on:
       - '.github/workflows/deploy.yml'
 
 jobs:
-  build:
+  deploy:
+    env:
+      GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
 
     runs-on: ubuntu-latest
 
@@ -31,6 +33,9 @@ jobs:
     - name: Set up .firebaserc
       run: echo -e "{\n  \"projects\":{\n    \"default\":\"${{ secrets.FIREBASE_PJ }}\"\n  }\n}" > .firebaserc
 
+    - name: Set credential json
+      run: echo ${{ secrets.GCLOUD_SERVICE_KEY }} | base64 -d > $GOOGLE_APPLICATION_CREDENTIALS
+
     - name: Cache node_modules dev packages
       uses: actions/cache@v1
       with:
@@ -40,4 +45,4 @@ jobs:
           ${{ runner.os }}-node-dev-
 
     - name: Deploy to Firebase
-      run: node_modules/.bin/firebase deploy --only functions --project "${{ secrets.FIREBASE_PJ }}" --token "${{ secrets.FIREBASE_TOKEN }}"
+      run: node_modules/.bin/firebase deploy --only functions --project "${{ secrets.FIREBASE_PJ }}"
