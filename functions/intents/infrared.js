@@ -1,6 +1,6 @@
 module.exports.morning = (admin, agent) => morning(admin, agent)
-module.exports.living = (admin, agent) => livingSet(admin, agent)
-module.exports.livingOff = (admin, agent) => livingOff(admin, agent)
+module.exports.living = (admin, agent, execSend) => livingSet(admin, agent, execSend)
+module.exports.livingOff = (admin, agent, execSend) => livingOff(admin, agent, execSend)
 module.exports.cd = (admin, agent) => cd(admin, agent)
 module.exports.switchOn = (admin, agent) => switchOn(admin, agent)
 
@@ -24,20 +24,6 @@ async function curtainOpen(admin) {
     })
 }
 
-async function remo(admin, urlName, param = null) {
-  const remoToken = (await admin.database().ref('/remo/token').once('value')).val()
-  console.log('remoToken' + remoToken)
-  const url = (await admin.database().ref('/remo/url/' + urlName).once('value')).val()
-  console.log('url' + url)
-  axios.post(url, param, {
-    headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ' + remoToken
-    }
-  }).then((res) => console.log(res))
-    .catch((error) => console.log(error))
-}
-
 async function switchOn(admin, agent) {
   const url = (await admin.database().ref('/url/plasmacluster').once('value')).val()
   axios.put(url, '"' + new Date() + '"')
@@ -46,28 +32,47 @@ async function switchOn(admin, agent) {
   agent.add('スイッチボットを操作します')
 }
 
-async function livingOff(admin, agent) {
-  remo(admin, 'fan_off')
-  remo(admin, 'living_light')
-  if (agent !== null) {
-    agent.add('リビングの照明を操作します')
+async function livingOff(admin, agent, execSend) {
+  const results = await remo(admin, ['fan_off', 'living_light'])
+
+  if (results) {
+    if (agent !== null) {
+      agent.add('リビングの照明を操作します')
+    }
+    if (execSend !== null) {
+      execSend('end living off')
+    }
+  } else {
+    if (agent !== null) {
+      agent.add('エラーが発生したようです')
+    }
+    if (execSend !== null) {
+      execSend('error living off')
+    }
   }
 }
 
-async function livingSet(admin, agent) {
-  remo(admin, 'living_light')
+async function livingSet(admin, agent, execSend) {
+  const fan = 'fan_1'
+  // const urlNames = ['living_light', fan, 'fan_reverse', 'fan_off', fan, 'fan_reverse'] // 夏場
+  const urlNames = ['living_light', fan] // 冬場
 
-  const power = '1'
+  const results = await remo(admin, urlNames)
 
-  remo(admin, 'fan_' + power)
-  // 以下、冬場はコメントアウト
-  remo(admin, 'fan_reverse')
-  remo(admin, 'fan_off')
-  remo(admin, 'fan_' + power)
-  remo(admin, 'fan_reverse')
-
-  if (agent !== null) {
-    agent.add('リビングの照明を操作します')
+  if (results) {
+    if (agent !== null) {
+      agent.add('リビングの照明を操作します')
+    }
+    if (execSend !== null) {
+      execSend('end living on')
+    }
+  } else {
+    if (agent !== null) {
+      agent.add('エラーが発生したようです')
+    }
+    if (execSend !== null) {
+      execSend('error living on')
+    }
   }
 }
 
@@ -96,7 +101,61 @@ async function morning(admin, agent) {
     curtainOpen(admin)
     agent.add('照明を操作します')
   } else {
-    remo(admin, 'CD')
+    await remo(admin, ['CD'])
     agent.add('CDコンポを操作します')
   }
+}
+
+const remo = async (admin, urlNames) => {
+  const remoToken = (await admin.database().ref('/remo/token').once('value')).val()
+  const header = {
+    'Accept': 'application/json',
+    'Authorization': 'Bearer ' + remoToken
+  }
+
+  const urlPromises = urlNames.map((urlName) => 
+    admin.database().ref('/remo/url/' + urlName).once('value')
+      .then((snapshot) => snapshot.val())
+      .catch((err) => {
+        console.log(err)
+      })
+  )
+
+  let urls = []
+  await Promise.all(urlPromises)
+    .then((url) => urls = url)
+    .catch((err) => {
+      console.log(err)
+    }) 
+
+  const promises = []
+  const waitPromise = () => new Promise(resolve => setTimeout(resolve, 800))
+
+  urls.forEach((value, index) => {
+    if (index > 0) {
+      promises.push(waitPromise)
+    }
+    promises.push(() => axios.post(value, null, { headers: header }))
+  })
+
+  const results = await sequential(promises)
+  return results
+}
+
+const sequential = async (promises) => {
+  const first = promises.shift()
+  if (first === null) {
+    return []
+  }
+
+  const results = []
+  await promises
+    .concat(() => Promise.resolve())
+    .reduce(async (prev, next) => {
+      const res = await prev
+      results.push(res)
+      return next()
+    }, Promise.resolve(first()))
+
+  return results
 }
