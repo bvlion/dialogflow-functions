@@ -77,7 +77,7 @@ async function livingSet(admin, agent, execSend) {
 }
 
 async function morning(admin, agent) {
-  livingSet(admin, null)
+  livingSet(admin, null, null)
 
   const nowDate = new Date()
   const nowYear = nowDate.getFullYear()
