@@ -79,7 +79,7 @@ async function livingSet(admin, agent, execSend) {
 async function morning(admin, agent) {
   livingSet(admin, null, null)
 
-  const nowDate = new Date()
+  const nowDate = new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000))
   const nowYear = nowDate.getFullYear()
   const nowMonth = nowDate.getMonth() + 1
   const nowDay = nowDate.getDate()
