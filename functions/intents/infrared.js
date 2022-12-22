@@ -1,17 +1,9 @@
 module.exports.morning = (admin, agent) => morning(admin, agent)
 module.exports.living = (admin, agent, execSend) => livingSet(admin, agent, execSend)
 module.exports.livingOff = (admin, agent, execSend) => livingOff(admin, agent, execSend)
-module.exports.cd = (admin, agent) => cd(admin, agent)
 module.exports.switchOn = (admin, agent) => switchOn(admin, agent)
 
 const axios = require('axios')
-
-// async function infrared(admin, param) {
-//   const url = (await admin.database().ref('/url/infrared').once('value')).val()
-//   axios.put(url, param)
-//     .then((res) => console.log(res))
-//     .catch((error) => console.log('infrared ' + error.message))
-// }
 
 async function curtainOpen(admin) {
   const url = (await admin.database().ref('/url/curtain').once('value')).val()

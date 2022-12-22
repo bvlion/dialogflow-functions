@@ -16,11 +16,9 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   intentMap.set('living', () => infrared.living(admin, agent, null))
   intentMap.set('livingOff', () => infrared.livingOff(admin, agent, null))
   intentMap.set('morning', () => infrared.morning(admin, agent))
-  intentMap.set('cd', () => infrared.cd(admin, agent))
   intentMap.set('switchOn', () => infrared.switchOn(admin, agent))
   intentMap.set('setholiday', () => others.setholiday(admin, agent))
   intentMap.set('voicetest', () => others.voicetest(admin, agent))
-  intentMap.set('sesame', () => others.sesame(admin, agent))
 
   agent.handleRequest(intentMap)
 })

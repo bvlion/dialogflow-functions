@@ -1,6 +1,5 @@
 module.exports.setholiday = (admin, agent) => setholiday(admin, agent)
 module.exports.voicetest = (admin, agent) => voicetest(admin, agent)
-module.exports.sesame = (admin, agent) => sesame(admin, agent)
 
 const axios = require('axios')
 
@@ -50,14 +49,4 @@ async function voicetest(admin, agent) {
     .catch((error) => console.log(error))
 
   agent.add(voice + 'の認識をSlackに送ります。もう 1度テストしてみますか？')
-}
-
-async function sesame(admin, agent) {
-  const operation = agent.parameters.operation
-  const is_open = operation == '開け' ? 83 : 82
-  const url = (await admin.database().ref('/url/sesame').once('value')).val()
-  axios.put(url, '"' + is_open + ' ' + new Date() + '"')
-    .then((res) => console.log(res))
-    .catch((error) => console.log('sesame ' + error.message))
-  agent.add(`玄関の鍵を${operation}ました`)
 }
