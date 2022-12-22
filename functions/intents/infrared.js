@@ -17,7 +17,7 @@ async function curtainOpen(admin) {
 }
 
 async function switchOn(admin, agent) {
-  const url = (await admin.database().ref('/url/plasmacluster').once('value')).val()
+  const url = (await admin.database().ref('/url/switch_bot').once('value')).val()
   axios.put(url, '"' + new Date() + '"')
     .then((res) => console.log(res))
     .catch((error) => console.log('infrared ' + error.message))
