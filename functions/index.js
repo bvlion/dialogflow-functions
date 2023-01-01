@@ -6,6 +6,10 @@ admin.initializeApp(functions.config().firebase)
 const {WebhookClient} = require('dialogflow-fulfillment')
 
 exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, response) => {
+  if (request.method === 'POST' && request.get('x-auth-header')) { 
+    response.status(200).send('Avoid cold start')
+  }
+
   const agent = new WebhookClient({ request, response })
 
   let intentMap = new Map()
