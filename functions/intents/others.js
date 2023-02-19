@@ -9,7 +9,7 @@ async function setholiday(admin, agent) {
   const holidays = agent.parameters.holidays
 
   let holiday_id = 0
-  let nowDate = new Date()
+  let nowDate = new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000))
 
   if (dates == '明日') {
     nowDate.setDate(nowDate.getDate() + 1)
