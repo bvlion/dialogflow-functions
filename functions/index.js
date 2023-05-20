@@ -52,6 +52,10 @@ async function asyncProcess(admin, request, response) {
     infrared.living(admin, null, execSend)
   } else if (request.body.type == 'living_off') {
     infrared.livingOff(admin, null, execSend)
+  } else if (request.body.type == 'morning') {
+    infrared.morning(admin, null, execSend)
+  } else if (request.body.type == 'switch_on') {
+    infrared.switchOn(admin, null, execSend)
   } else {
     execSend('This is post request')
   }

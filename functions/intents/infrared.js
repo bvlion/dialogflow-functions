@@ -1,7 +1,7 @@
-module.exports.morning = (admin, agent) => morning(admin, agent)
+module.exports.morning = (admin, agent, execSend) => morning(admin, agent, execSend)
 module.exports.living = (admin, agent, execSend) => livingSet(admin, agent, execSend)
 module.exports.livingOff = (admin, agent, execSend) => livingOff(admin, agent, execSend)
-module.exports.switchOn = (admin, agent) => switchOn(admin, agent)
+module.exports.switchOn = (admin, agent, execSend) => switchOn(admin, agent, execSend)
 
 const axios = require('axios')
 
@@ -16,12 +16,17 @@ async function curtainOpen(admin) {
     })
 }
 
-async function switchOn(admin, agent) {
+async function switchOn(admin, agent, execSend) {
   const url = (await admin.database().ref('/url/switch_bot').once('value')).val()
   axios.put(url, '"' + new Date() + '"')
     .then((res) => console.log(res))
     .catch((error) => console.log('infrared ' + error.message))
-  agent.add('スイッチボットを操作します')
+    if (agent !== null) {
+      agent.add('スイッチボットを操作します')
+    }
+    if (execSend !== null) {
+      execSend('end switchBot on')
+    }
 }
 
 async function livingOff(admin, agent, execSend) {
@@ -68,7 +73,7 @@ async function livingSet(admin, agent, execSend) {
   }
 }
 
-async function morning(admin, agent) {
+async function morning(admin, agent, execSend) {
   livingSet(admin, null, null)
 
   const nowDate = new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000))
@@ -91,10 +96,20 @@ async function morning(admin, agent) {
 
   if (nowHoliday) {
     curtainOpen(admin)
-    agent.add('照明を操作します')
+    if (agent !== null) {
+      agent.add('照明を操作します')
+    }
+    if (execSend !== null) {
+      execSend('end morning with curtain')
+    }
   } else {
     await remo(admin, ['CD'])
-    agent.add('CDコンポを操作します')
+    if (agent !== null) {
+      agent.add('CDコンポを操作します')
+    }
+    if (execSend !== null) {
+      execSend('end morning with CD')
+    }
   }
 }
 
