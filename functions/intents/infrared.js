@@ -136,7 +136,7 @@ const remo = async (admin, urlNames) => {
     }) 
 
   const promises = []
-  const waitPromise = () => new Promise(resolve => setTimeout(resolve, 850))
+  const waitPromise = () => new Promise(resolve => setTimeout(resolve, １０００))
 
   urls.forEach((value, index) => {
     if (index > 0) {
