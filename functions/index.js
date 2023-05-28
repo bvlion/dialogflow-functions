@@ -22,7 +22,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   intentMap.set('livingOff', () => infrared.livingOff(admin, agent, null))
   intentMap.set('morning', () => infrared.morning(admin, agent))
   intentMap.set('switchOn', () => infrared.switchOn(admin, agent))
-  intentMap.set('setholiday', () => others.setholiday(admin, agent))
+  intentMap.set('setholiday', () => others.setHolidayVoice(admin, agent))
   intentMap.set('voicetest', () => others.voicetest(admin, agent))
   intentMap.set('sesame', () => others.sesame(admin, agent))
 
@@ -44,6 +44,7 @@ async function asyncProcess(admin, request, response) {
   }
 
   const infrared = require('./intents/infrared')
+  const other = require('./intents/others')
   const execSend = function (msg) {
     response.status(200).send(msg)
   }
@@ -56,6 +57,18 @@ async function asyncProcess(admin, request, response) {
     infrared.morning(admin, null, execSend)
   } else if (request.body.type == 'switch_on') {
     infrared.switchOn(admin, null, execSend)
+  } else if (request.body.type == 'set_today_holiday') {
+    other.setTodayHoliday(admin, execSend)
+  } else if (request.body.type == 'set_today_weekday') {
+    other.setTodayWeekday(admin, execSend)
+  } else if (request.body.type == 'set_tomorrow_holiday') {
+    other.setTomorrowHoliday(admin, execSend)
+  } else if (request.body.type == 'set_tomorrow_weekday') {
+    other.setTomorrowWeekday(admin, execSend)
+  } else if (request.body.type == 'sesame_open') {
+    other.sesameOpen(admin, execSend)
+  } else if (request.body.type == 'sesame_close') {
+    other.sesameClose(admin, execSend)
   } else {
     execSend('This is post request')
   }
