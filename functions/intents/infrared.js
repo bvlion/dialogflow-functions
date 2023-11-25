@@ -51,8 +51,8 @@ async function livingOff(admin, agent, execSend) {
 
 async function livingSet(admin, agent, execSend) {
   const fan = 'fan_1'
-  const urlNames = ['living_light', fan, 'fan_reverse', 'fan_off', fan, 'fan_reverse'] // 夏場
-  // const urlNames = ['living_light', fan] // 冬場
+  // const urlNames = ['living_light', fan, 'fan_reverse', 'fan_off', fan, 'fan_reverse'] // 夏場
+  const urlNames = ['living_light', fan] // 冬場
 
   const results = await remo(admin, urlNames)
 
