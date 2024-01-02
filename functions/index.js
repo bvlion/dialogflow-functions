@@ -25,13 +25,13 @@ async function asyncProcess(admin, request, response) {
   }
 
   if (request.body.type == 'living_on') {
-    infrared.living(admin, null, execSend)
+    infrared.living(admin, execSend)
   } else if (request.body.type == 'living_off') {
-    infrared.livingOff(admin, null, execSend)
+    infrared.livingOff(admin, execSend)
   } else if (request.body.type == 'morning') {
-    infrared.morning(admin, null, execSend)
+    infrared.morning(admin, execSend)
   } else if (request.body.type == 'switch_on') {
-    infrared.switchOn(admin, null, execSend)
+    infrared.switchOn(admin, execSend)
   } else if (request.body.type == 'set_today_holiday') {
     other.setTodayHoliday(admin, execSend)
   } else if (request.body.type == 'set_today_weekday') {
