@@ -55,6 +55,10 @@ async function morning(admin, execSend) {
   const token = (await admin.database().ref('/holidays-webhook/token').once('value')).val()
   axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
   const res = await axios.get(url)
+  console.log('url: ' + url)
+  console.log('res: ' + res)
+  console.log('res.data.holiday: ' + res.data.holiday)
+  console.log('res.data.force: ' + res.data.force)
   if (res.data.holiday) {
     nowHoliday = true;
   }
