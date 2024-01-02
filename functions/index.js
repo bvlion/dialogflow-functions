@@ -7,6 +7,7 @@ admin.initializeApp(functions.config().firebase)
 exports.postRequestFunction = functions.https.onRequest((request, response) => {
   if (request.method !== 'POST') {
     response.status(404).send('Not post request')
+    return
   }
   asyncProcess(admin, request, response)
 })
@@ -16,6 +17,7 @@ async function asyncProcess(admin, request, response) {
 
   if (headerToken != request.get('x-auth-header')) {
     response.status(400).send('Not has Header')
+    return
   }
 
   const infrared = require('./intents/infrared')
