@@ -1,55 +1,29 @@
-module.exports.morning = (admin, agent, execSend) => morning(admin, agent, execSend)
-module.exports.living = (admin, agent, execSend) => livingSet(admin, agent, execSend)
-module.exports.livingOff = (admin, agent, execSend) => livingOff(admin, agent, execSend)
-module.exports.switchOn = (admin, agent, execSend) => switchOn(admin, agent, execSend)
+module.exports.morning = (admin, execSend) => morning(admin, execSend)
+module.exports.living = (admin, execSend) => livingSet(admin, execSend)
+module.exports.livingOff = (admin, execSend) => livingOff(admin, execSend)
+module.exports.switchOn = (admin, execSend) => switchOn(admin, execSend)
 
 const axios = require('axios')
 
-async function curtainOpen(admin) {
-  const url = (await admin.database().ref('/url/curtain').once('value')).val()
-
-  axios.post(url)
-    .then((res) => console.log(res))
-    .catch((error) => {
-      console.log('curtain ' + error.message)
-      console.log(error)
-    })
-}
-
-async function switchOn(admin, agent, execSend) {
+async function switchOn(admin, execSend) {
   const url = (await admin.database().ref('/url/switch_bot').once('value')).val()
   axios.put(url, '"' + new Date() + '"')
     .then((res) => console.log(res))
     .catch((error) => console.log('infrared ' + error.message))
-    if (agent !== null) {
-      agent.add('スイッチボットを操作します')
-    }
-    if (execSend !== null) {
-      execSend('end switchBot on')
-    }
+  execSend('end switchBot on')
 }
 
-async function livingOff(admin, agent, execSend) {
+async function livingOff(admin, execSend) {
   const results = await remo(admin, ['fan_off', 'living_light'])
 
   if (results) {
-    if (agent !== null) {
-      agent.add('リビングの照明を操作します')
-    }
-    if (execSend !== null) {
-      execSend('end living off')
-    }
+    execSend('end living off')
   } else {
-    if (agent !== null) {
-      agent.add('エラーが発生したようです')
-    }
-    if (execSend !== null) {
-      execSend('error living off')
-    }
+    execSend('error living off')
   }
 }
 
-async function livingSet(admin, agent, execSend) {
+async function livingSet(admin, execSend) {
   const fan = 'fan_1'
   // const urlNames = ['living_light', fan, 'fan_reverse', 'fan_off', fan, 'fan_reverse'] // 夏場
   const urlNames = ['living_light', fan] // 冬場
@@ -57,24 +31,18 @@ async function livingSet(admin, agent, execSend) {
   const results = await remo(admin, urlNames)
 
   if (results) {
-    if (agent !== null) {
-      agent.add('リビングの照明を操作します')
-    }
     if (execSend !== null) {
       execSend('end living on')
     }
   } else {
-    if (agent !== null) {
-      agent.add('エラーが発生したようです')
-    }
     if (execSend !== null) {
       execSend('error living on')
     }
   }
 }
 
-async function morning(admin, agent, execSend) {
-  livingSet(admin, null, null)
+async function morning(admin, execSend) {
+  livingSet(admin, null)
 
   const nowDate = new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000))
   const nowYear = nowDate.getFullYear()
@@ -96,21 +64,22 @@ async function morning(admin, agent, execSend) {
 
   if (nowHoliday) {
     curtainOpen(admin)
-    if (agent !== null) {
-      agent.add('照明を操作します')
-    }
-    if (execSend !== null) {
-      execSend('end morning with curtain')
-    }
+    execSend('end morning with curtain')
   } else {
     await remo(admin, ['CD'])
-    if (agent !== null) {
-      agent.add('CDコンポを操作します')
-    }
-    if (execSend !== null) {
-      execSend('end morning with CD')
-    }
+    execSend('end morning with CD')
   }
+}
+
+async function curtainOpen(admin) {
+  const url = (await admin.database().ref('/url/curtain').once('value')).val()
+
+  axios.post(url)
+    .then((res) => console.log(res))
+    .catch((error) => {
+      console.log('curtain ' + error.message)
+      console.log(error)
+    })
 }
 
 const remo = async (admin, urlNames) => {
