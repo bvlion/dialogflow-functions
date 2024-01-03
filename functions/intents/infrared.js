@@ -42,6 +42,7 @@ async function livingSet(admin, execSend) {
 }
 
 async function morning(admin, execSend) {
+  await remo(admin, ['bed_room'])
   livingSet(admin, null)
 
   const nowDate = new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000))
@@ -112,7 +113,11 @@ const remo = async (admin, urlNames) => {
     if (index > 0) {
       promises.push(waitPromise)
     }
-    promises.push(() => axios.post(value, null, { headers: header }))
+    const params = new URLSearchParams()
+    if (value.slice(-5) == 'light') {
+      params.append('button', 'on')
+    }
+    promises.push(() => axios.post(value, params, { headers: header }))
   })
 
   const results = await sequential(promises)
