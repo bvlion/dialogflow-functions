@@ -54,24 +54,12 @@ async function morning(admin, execSend) {
     + nowYear + '-' + nowMonth + '-' + nowDay
   const token = (await admin.database().ref('/holidays-webhook/token').once('value')).val()
   axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
-  try {
-    const res = await axios.get(url)
-    console.log('res: start ----------------')
-    console.log(res.data)
-    console.log('res: end ----------------')
-  } catch (error) {
-    if (error.response) {
-      console.error("Error Response:", error.response.status, error.response.data);
-    } else if (error.request) {
-      console.error("No Response:", error.request);
-    } else {
-      console.error("Error Setting Up Request:", error.message);
-    }
-  }
-  if (res.data.holiday) {
+  const res = await axios.get(url)
+  const data = JSON.parse(res.data.toString().match(/{.*}/))
+  if (data.holiday) {
     nowHoliday = true;
   }
-  if (res.data.force) {
+  if (data.force) {
     nowHoliday = true;
   }
 
