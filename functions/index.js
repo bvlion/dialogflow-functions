@@ -2,7 +2,13 @@
 
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
-admin.initializeApp(functions.config().firebase)
+if (process.env.LOCAL_DATABASE_URL) {
+  admin.initializeApp({
+    databaseURL: process.env.LOCAL_DATABASE_URL,
+  })
+} else {
+  admin.initializeApp(functions.config().firebase)
+}
 
 exports.postRequestFunction = functions.https.onRequest((request, response) => {
   if (request.method !== 'POST') {
