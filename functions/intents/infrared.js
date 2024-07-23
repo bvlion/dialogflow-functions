@@ -43,7 +43,7 @@ async function livingSet(admin, execSend) {
 
 async function morning(admin, execSend) {
   await remo(admin, ['bed_room'])
-  livingSet(admin, null)
+  await livingSet(admin, null)
 
   const nowDate = new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000))
   const nowYear = nowDate.getFullYear()
@@ -65,7 +65,7 @@ async function morning(admin, execSend) {
   }
 
   if (nowHoliday) {
-    curtainOpen(admin)
+    await curtainOpen(admin)
     execSend('end morning with curtain')
   } else {
     await remo(admin, ['CD'])
