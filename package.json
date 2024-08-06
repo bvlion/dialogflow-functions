@@ -2,7 +2,7 @@
   "name": "firebase-tools",
   "description": "save firebase-tools",
   "devDependencies": {
-    "eslint-plugin-promise": "^6.1.0",
+    "eslint-plugin-promise": "^7.1.0",
     "firebase-tools": "^9.1.0"
   },
   "private": true
