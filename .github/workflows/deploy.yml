@@ -18,11 +18,11 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [20.x]
 
     steps:
     - name: checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       
     - name: npm install
       run: cd functions && npm install
@@ -36,13 +36,13 @@ jobs:
     - name: Set credential json
       run: echo ${{ secrets.GCLOUD_SERVICE_KEY }} | base64 -d > $GOOGLE_APPLICATION_CREDENTIALS
 
-    - name: Cache node_modules dev packages
-      uses: actions/cache@v1
+    - name: Cache node_modules production packages
+      uses: actions/cache@v4
       with:
         path: ~/node_modules
-        key: ${{ runner.os }}-node-dev-${{ hashFiles('**/package-lock.json') }}
+        key: ${{ runner.os }}-node-production-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
-          ${{ runner.os }}-node-dev-
+          ${{ runner.os }}-node-production-
 
     - name: Deploy to Firebase
       run: node_modules/.bin/firebase deploy --only functions --project "${{ secrets.FIREBASE_PJ }}"
