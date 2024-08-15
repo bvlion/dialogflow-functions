@@ -62,6 +62,5 @@ node_modules/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env
-.envrc
+## default data
+functions/data/default-rtdb-export.json
