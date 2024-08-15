@@ -17,12 +17,11 @@ export default [...compat.extends("eslint:recommended"), {
         promise,
     },
 
-    parserOptions: {
-        "sourceType": "module",
-    },
-
     languageOptions: {
-        ecmaVersion: 2017,
+        parserOptions: {
+            ecmaVersion: 2020,
+            sourceType: "module",
+        },
     },
 
     rules: {
