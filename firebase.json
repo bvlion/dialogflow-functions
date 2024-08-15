@@ -6,16 +6,14 @@
     "predeploy": [
       "npm --prefix \"$RESOURCE_DIR\" run lint"
     ],
-    "runtime": "nodejs14"
+    "runtime": "nodejs20"
   },
   "emulators": {
     "functions": {
-      "port": 5001,
-      "host": "localhost"
+      "port": 5001
     },
     "database": {
-      "port": 5002,
-      "host": "localhost"
+      "port": 5002
     }
   }
 }
