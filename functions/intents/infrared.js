@@ -24,7 +24,7 @@ async function livingOff(admin, execSend) {
 }
 
 async function livingSet(admin, execSend) {
-  const fan = 'fan_2'
+  const fan = 'fan_1'
   const urlNames = ['living_light', fan, 'fan_reverse', 'fan_off', fan, 'fan_reverse'] // 夏場
   // const urlNames = ['living_light', fan] // 冬場
 
@@ -57,11 +57,18 @@ async function morning(admin, execSend) {
   axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
   const res = await axios.get(url)
   const data = JSON.parse(res.data.toString().match(/{.*}/))
-  if (data.holiday) {
-    nowHoliday = true;
-  }
-  if (data.force) {
-    nowHoliday = true;
+
+  console.log(`res: ${res}`)
+  console.log(`data: ${data}`)
+  try {
+    if (data.holiday) {
+      nowHoliday = true;
+    }
+    if (data.force) {
+      nowHoliday = true;
+    }
+  } catch(e) {
+    console.log(e)
   }
 
   if (nowHoliday) {
