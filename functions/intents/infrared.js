@@ -51,22 +51,23 @@ async function morning(admin, execSend) {
   const nowDay = nowDate.getDate()
   let nowHoliday = nowDate.getDay() == 0 || nowDate.getDay() == 6
 
-  const url = (await admin.database().ref('/holidays-webhook/get-calendar').once('value')).val()
-    + nowYear + '-' + nowMonth + '-' + nowDay
-  const token = (await admin.database().ref('/holidays-webhook/token').once('value')).val()
-  axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
-  const res = await axios.get(url)
-  const data = JSON.parse(res.data.toString().match(/{.*}/))
-
-  console.log(`res: ${res}`)
-  console.log(`data: ${data}`)
   try {
+    const url = (await admin.database().ref('/holidays-webhook/get-calendar').once('value')).val()
+      + nowYear + '-' + nowMonth + '-' + nowDay
+    const token = (await admin.database().ref('/holidays-webhook/token').once('value')).val()
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+    const res = await axios.get(url)
+    const data = JSON.parse(res.data.toString().match(/{.*}/))
+
+    console.log(`data: ${data}`)
+  
     if (data.holiday) {
       nowHoliday = true;
     }
     if (data.force) {
       nowHoliday = true;
     }
+    console.log(`nowHoliday: ${nowHoliday}`)
   } catch(e) {
     console.log(e)
   }
