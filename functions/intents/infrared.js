@@ -25,8 +25,8 @@ async function livingOff(admin, execSend) {
 
 async function livingSet(admin, execSend) {
   const fan = 'fan_1'
-  const urlNames = ['living_light', fan, 'fan_reverse', 'fan_off', fan, 'fan_reverse'] // 夏場
-  // const urlNames = ['living_light', fan] // 冬場
+  // const urlNames = ['living_light', fan, 'fan_reverse', 'fan_off', fan, 'fan_reverse'] // 夏場
+  const urlNames = ['living_light', fan] // 冬場
 
   const results = await remo(admin, urlNames)
 
@@ -44,40 +44,43 @@ async function livingSet(admin, execSend) {
 async function morning(admin, execSend) {
   await remo(admin, ['bed_room'])
   await livingSet(admin, null)
+  await checkHolidayExec(admin)
+}
 
+async function checkHolidayExec(admin) {
   const nowDate = new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000))
   const nowYear = nowDate.getFullYear()
   const nowMonth = nowDate.getMonth() + 1
   const nowDay = nowDate.getDate()
   let nowHoliday = nowDate.getDay() == 0 || nowDate.getDay() == 6
-
-  try {
-    const url = (await admin.database().ref('/holidays-webhook/get-calendar').once('value')).val()
-      + nowYear + '-' + nowMonth + '-' + nowDay
-    const token = (await admin.database().ref('/holidays-webhook/token').once('value')).val()
-    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
-    const res = await axios.get(url)
-    const data = JSON.parse(res.data.toString().match(/{.*}/))
-
-    console.log(`data: ${data}`)
   
+  const url = (await admin.database().ref('/holidays-webhook/get-calendar').once('value')).val()
+    + nowYear + '-' + nowMonth + '-' + nowDay
+  const token = (await admin.database().ref('/holidays-webhook/token').once('value')).val()
+  axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+  const res = await axios.get(url)
+  const data = JSON.parse(res.data.toString().match(/{.*}/))
+  
+  if (data !== null && data !== undefined) {
     if (data.holiday) {
-      nowHoliday = true;
+      nowHoliday = true
     }
     if (data.force) {
-      nowHoliday = true;
+      nowHoliday = true
     }
     console.log(`nowHoliday: ${nowHoliday}`)
-  } catch(e) {
-    console.log(e)
-  }
 
-  if (nowHoliday) {
-    await curtainOpen(admin)
-    execSend('end morning with curtain')
+    if (nowHoliday) {
+      await curtainOpen(admin)
+      execSend('end morning with curtain')
+    } else {
+      await remo(admin, ['CD'])
+      execSend('end morning with CD')
+    }
   } else {
-    await remo(admin, ['CD'])
-    execSend('end morning with CD')
+    console.log(`data: ${data}`)
+    console.log(`res.data: ${res.data.toString()}`)
+    checkHolidayExec(admin)
   }
 }
 
