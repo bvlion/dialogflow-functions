@@ -8,7 +8,7 @@ const axios = require('axios')
 async function switchOn(admin, execSend) {
   const url = (await admin.database().ref('/url/switch_bot').once('value')).val()
   axios.put(url, '"' + new Date() + '"')
-    .then((res) => console.log(res))
+    .then((res) => console.log(res.config.url))
     .catch((error) => console.log('infrared ' + error.message))
   execSend('end switchBot on')
 }
@@ -58,7 +58,9 @@ async function checkHolidayExec(admin) {
     + nowYear + '-' + nowMonth + '-' + nowDay
   const token = (await admin.database().ref('/holidays-webhook/token').once('value')).val()
   axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+  console.log(`url: ${url}`)
   const res = await axios.get(url)
+  console.log(`url: ${res}`)
   const data = JSON.parse(res.data.toString().match(/{.*}/))
   
   if (data !== null && data !== undefined) {
