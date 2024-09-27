@@ -43,11 +43,12 @@ async function livingSet(admin, execSend) {
 
 async function morning(admin, execSend) {
   await remo(admin, ['bed_room'])
-  await livingSet(admin, null)
-  await checkHolidayExec(admin)
+  await livingSet(admin, execSend)
+  // await livingSet(admin, null)
+  // await checkHolidayExec(admin, execSend)
 }
 
-async function checkHolidayExec(admin) {
+async function checkHolidayExec(admin, execSend) {
   const nowDate = new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000))
   const nowYear = nowDate.getFullYear()
   const nowMonth = nowDate.getMonth() + 1
