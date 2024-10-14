@@ -42,50 +42,14 @@ async function livingSet(admin, execSend) {
 }
 
 async function morning(admin, execSend) {
+  const url = (await admin.database().ref('/url/morning').once('value')).val()
+  axios.put(url, '"' + new Date() + '"')
+    .then((res) => console.log(res.config.url))
+    .catch((error) => console.log('infrared ' + error.message))
   await remo(admin, ['bed_room'])
   await livingSet(admin, execSend)
-  // await livingSet(admin, null)
-  // await checkHolidayExec(admin, execSend)
 }
 
-async function checkHolidayExec(admin, execSend) {
-  const nowDate = new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000))
-  const nowYear = nowDate.getFullYear()
-  const nowMonth = nowDate.getMonth() + 1
-  const nowDay = nowDate.getDate()
-  let nowHoliday = nowDate.getDay() == 0 || nowDate.getDay() == 6
-  
-  const url = (await admin.database().ref('/holidays-webhook/get-calendar').once('value')).val()
-    + nowYear + '-' + nowMonth + '-' + nowDay
-  const token = (await admin.database().ref('/holidays-webhook/token').once('value')).val()
-  axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
-  console.log(`url: ${url}`)
-  const res = await axios.get(url)
-  console.log(`url: ${res}`)
-  const data = JSON.parse(res.data.toString().match(/{.*}/))
-  
-  if (data !== null && data !== undefined) {
-    if (data.holiday) {
-      nowHoliday = true
-    }
-    if (data.force) {
-      nowHoliday = true
-    }
-    console.log(`nowHoliday: ${nowHoliday}`)
-
-    if (nowHoliday) {
-      await curtainOpen(admin)
-      execSend('end morning with curtain')
-    } else {
-      await remo(admin, ['CD'])
-      execSend('end morning with CD')
-    }
-  } else {
-    console.log(`data: ${data}`)
-    console.log(`res.data: ${res.data.toString()}`)
-    checkHolidayExec(admin)
-  }
-}
 
 async function curtainOpen(admin) {
   const url = (await admin.database().ref('/url/curtain').once('value')).val()
