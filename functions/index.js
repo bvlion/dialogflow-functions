@@ -28,6 +28,7 @@ async function asyncProcess(admin, request, response) {
 
   const infrared = require('./intents/infrared')
   const other = require('./intents/others')
+  const raspi = require('./intents/raspi')
   const execSend = function (msg) {
     response.status(200).send(msg)
   }
@@ -38,8 +39,6 @@ async function asyncProcess(admin, request, response) {
     infrared.livingOff(admin, execSend)
   } else if (request.body.type == 'morning') {
     infrared.morning(admin, execSend)
-  } else if (request.body.type == 'switch_on') {
-    infrared.switchOn(admin, execSend)
   } else if (request.body.type == 'set_today_holiday') {
     other.setTodayHoliday(admin, execSend)
   } else if (request.body.type == 'set_today_weekday') {
@@ -48,10 +47,24 @@ async function asyncProcess(admin, request, response) {
     other.setTomorrowHoliday(admin, execSend)
   } else if (request.body.type == 'set_tomorrow_weekday') {
     other.setTomorrowWeekday(admin, execSend)
+  } else if (request.body.type == 'speak_text') {
+    raspi.speakText(request.body.text, admin, execSend)
+  } else if (request.body.type == 'speak_time') {
+    const nowJst = new Date().toLocaleTimeString('ja-JP', {
+      timeZone: 'Asia/Tokyo',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    })
+    raspi.speakText(`時刻は${nowJst}です … ${new Date().toISOString()} … 45 … home`, admin, execSend)
+  } else if (request.body.type == 'curtain') {
+    raspi.curtain(request.body.command, admin, execSend)
+  } else if (request.body.type == 'floorheating') {
+    raspi.floorheating(admin, execSend)
   } else if (request.body.type == 'sesame_open') {
-    other.sesameOpen(admin, execSend)
+    raspi.sesame(`83 ${new Date().toISOString()}`, admin, execSend)
   } else if (request.body.type == 'sesame_close') {
-    other.sesameClose(admin, execSend)
+    raspi.sesame(`82 ${new Date().toISOString()}`, admin, execSend)
   } else {
     execSend('This is post request')
   }

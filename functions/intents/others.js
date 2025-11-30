@@ -2,8 +2,6 @@ module.exports.setTodayHoliday = (admin, execSend) => setTodayHoliday(admin, exe
 module.exports.setTodayWeekday = (admin, execSend) => setTodayWeekday(admin, execSend)
 module.exports.setTomorrowHoliday = (admin, execSend) => setTomorrowHoliday(admin, execSend)
 module.exports.setTomorrowWeekday = (admin, execSend) => setTomorrowWeekday(admin, execSend)
-module.exports.sesameOpen = (admin, execSend) => sesameOpen(admin, execSend)
-module.exports.sesameClose = (admin, execSend) => sesameClose(admin, execSend)
 
 const axios = require('axios')
 
@@ -48,21 +46,4 @@ async function setHoliday(admin, holiday_id, addDate) {
   })
     .then((res) => console.log(res))
     .catch((error) => console.log(error))
-}
-
-async function sesameOpen(admin, execSend) {
-  sesameLocal(admin, 83)
-  execSend('sesameOpen')
-}
-
-async function sesameClose(admin, execSend) {
-  sesameLocal(admin, 82)
-  execSend('sesameClose')
-}
-
-async function sesameLocal(admin, openCode) {
-  const url = (await admin.database().ref('/url/sesame').once('value')).val()
-  axios.put(url, '"' + openCode + ' ' + new Date() + '"')
-    .then((res) => console.log(res))
-    .catch((error) => console.log('sesame ' + error.message))
 }

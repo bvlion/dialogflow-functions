@@ -1,17 +1,8 @@
 module.exports.morning = (admin, execSend) => morning(admin, execSend)
 module.exports.living = (admin, execSend) => livingSet(admin, execSend)
 module.exports.livingOff = (admin, execSend) => livingOff(admin, execSend)
-module.exports.switchOn = (admin, execSend) => switchOn(admin, execSend)
 
 const axios = require('axios')
-
-async function switchOn(admin, execSend) {
-  const url = (await admin.database().ref('/url/switch_bot').once('value')).val()
-  axios.put(url, '"' + new Date() + '"')
-    .then((res) => console.log(res.config.url))
-    .catch((error) => console.log('infrared ' + error.message))
-  execSend('end switchBot on')
-}
 
 async function livingOff(admin, execSend) {
   const results = await remo(admin, ['fan_off', 'living_light'])
@@ -42,24 +33,9 @@ async function livingSet(admin, execSend) {
 }
 
 async function morning(admin, execSend) {
-  const url = (await admin.database().ref('/url/morning').once('value')).val()
-  axios.put(url, '"' + new Date() + '"')
-    .then((res) => console.log(res.config.url))
-    .catch((error) => console.log('infrared ' + error.message))
+  await admin.database().ref('/pi/morning').set(new Date().toISOString())
   await remo(admin, ['bed_room'])
   await livingSet(admin, execSend)
-}
-
-
-async function curtainOpen(admin) {
-  const url = (await admin.database().ref('/url/curtain').once('value')).val()
-
-  axios.post(url)
-    .then((res) => console.log(res))
-    .catch((error) => {
-      console.log('curtain ' + error.message)
-      console.log(error)
-    })
 }
 
 const remo = async (admin, urlNames) => {
