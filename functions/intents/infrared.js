@@ -1,6 +1,9 @@
 module.exports.morning = (admin, execSend) => morning(admin, execSend)
 module.exports.living = (admin, execSend) => livingSet(admin, execSend)
 module.exports.livingOff = (admin, execSend) => livingOff(admin, execSend)
+module.exports.beforeSleep = (admin, execSend) => beforeSleep(admin, execSend)
+module.exports.sleep = (admin, execSend) => sleep(admin, execSend)
+module.exports.allOff = (admin, execSend) => allOff(admin, execSend)
 
 const axios = require('axios')
 
@@ -34,8 +37,39 @@ async function livingSet(admin, execSend) {
 
 async function morning(admin, execSend) {
   await admin.database().ref('/pi/morning').set(new Date().toISOString())
-  await remo(admin, ['bed_room'])
+  await remo(admin, ['bed_room_light_on'])
   await livingSet(admin, execSend)
+}
+
+async function beforeSleep(admin, execSend) {
+  const results = await remo(admin, ['bed_room_light_on', 'outlet_off', 'fan_off', 'living_light', 'living_aircon_power_off', 'work_room_light_off', 'work_room_aircon_power_off'])
+
+  if (results) {
+    execSend('end before sleep off')
+  } else {
+    execSend('error before sleep off')
+  }
+}
+
+async function sleep(admin, execSend) {
+  await admin.database().ref('/pi/curtain').set(`閉め ${new Date().toISOString()}`)
+  const results = await remo(admin, ['bed_room_light_off'])
+
+  if (results) {
+    execSend('end sleep off')
+  } else {
+    execSend('error sleep off')
+  }
+}
+
+async function allOff(admin, execSend) {
+  const results = await remo(admin, ['fan_off', 'living_light', 'living_aircon_power_off', 'bed_room_light_off', 'bed_room_aircon_power_off', 'outlet_off', 'work_room_light_off', 'work_room_aircon_power_off'])
+
+  if (results) {
+    execSend('end living off')
+  } else {
+    execSend('error living off')
+  }
 }
 
 const remo = async (admin, urlNames) => {
@@ -53,6 +87,20 @@ const remo = async (admin, urlNames) => {
       })
   )
 
+  const paramsArray = urlNames.map((urlName) => {
+    const params = new URLSearchParams()
+    if (urlName.slice(-9) == 'power_off') {
+      params.append('button', 'power-off')
+    }
+    if (urlName.slice(-9) == 'light_off') {
+      params.append('button', 'off')
+    }
+    if (urlName.slice(-8) == 'light_on') {
+      params.append('button', 'on')
+    }
+    return params
+  })
+
   let urls = []
   await Promise.all(urlPromises)
     .then((url) => urls = url)
@@ -67,11 +115,7 @@ const remo = async (admin, urlNames) => {
     if (index > 0) {
       promises.push(waitPromise)
     }
-    const params = new URLSearchParams()
-    if (value.slice(-5) == 'light') {
-      params.append('button', 'on')
-    }
-    promises.push(() => axios.post(value, params, { headers: header }))
+    promises.push(() => axios.post(value, paramsArray[index], { headers: header }))
   })
 
   const results = await sequential(promises)
