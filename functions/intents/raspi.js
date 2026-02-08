@@ -1,6 +1,6 @@
 module.exports.speakText = (text, admin, execSend) => speakText(text, admin, execSend)
 module.exports.curtain = (command, admin, execSend) => curtain(command, admin, execSend)
-module.exports.floorheating = (admin, execSend) => floorheating(admin, execSend)
+module.exports.pcSwitch = (admin, execSend) => pcSwitch(admin, execSend)
 module.exports.sesame = (command, admin, execSend) => sesame(command, admin, execSend)
 
 async function speakText(text, admin, execSend) {
@@ -13,8 +13,8 @@ async function curtain(command, admin, execSend) {
   execSend('curtain ' + command)
 }
 
-async function floorheating(admin, execSend) {
-  await admin.database().ref('/pi/floorheating').set(new Date().toISOString())
+async function pcSwitch(admin, execSend) {
+  await admin.database().ref('/pi/pc_switch').set(new Date().toISOString())
   execSend('floor heating updated')
 }
 

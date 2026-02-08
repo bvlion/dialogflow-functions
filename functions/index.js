@@ -59,8 +59,8 @@ async function asyncProcess(admin, request, response) {
     raspi.speakText(`時刻は${nowJst}です … ${new Date().toISOString()} … 45 … home`, admin, execSend)
   } else if (request.body.type == 'curtain') {
     raspi.curtain(request.body.command, admin, execSend)
-  } else if (request.body.type == 'floorheating') {
-    raspi.floorheating(admin, execSend)
+  } else if (request.body.type == 'pc_switch') {
+    raspi.pcSwitch(admin, execSend)
   } else if (request.body.type == 'sesame_open') {
     raspi.sesame(`83 ${new Date().toISOString()}`, admin, execSend)
   } else if (request.body.type == 'sesame_close') {
