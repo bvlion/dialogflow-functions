@@ -1,16 +1,13 @@
 'use strict'
 
-const functions = require('firebase-functions')
+const { onRequest } = require("firebase-functions/v2/https")
 const admin = require('firebase-admin')
-if (process.env.LOCAL_DATABASE_URL) {
-  admin.initializeApp({
-    databaseURL: process.env.LOCAL_DATABASE_URL,
-  })
-} else {
-  admin.initializeApp(functions.config().firebase)
-}
 
-exports.postRequestFunction = functions.https.onRequest((request, response) => {
+admin.initializeApp({
+  databaseURL: process.env.FIREBASE_DATABASE_URL,
+})
+
+exports.postRequestFunction = onRequest((request, response) => {
   if (request.method !== 'POST') {
     response.status(404).send('Not post request')
     return
