@@ -36,9 +36,11 @@ async function livingSet(admin, execSend) {
 }
 
 async function morning(admin, execSend) {
-  await admin.database().ref('/pi/morning').set(new Date().toISOString())
-  await remo(admin, ['bed_room_light_on'])
+  // await admin.database().ref('/pi/morning').set(new Date().toISOString())
+  await admin.database().ref('/pi/curtain').set(`開け ${new Date().toISOString()}`)
+  // await remo(admin, ['bed_room_light_on'])
   await livingSet(admin, execSend)
+  await remo(admin, ['living_2_orange', 'living_2_orange'])
 }
 
 async function beforeSleep(admin, execSend) {

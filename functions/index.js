@@ -62,6 +62,8 @@ async function asyncProcess(admin, request, response) {
     raspi.sesame(`83 ${new Date().toISOString()}`, admin, execSend)
   } else if (request.body.type == 'sesame_close') {
     raspi.sesame(`82 ${new Date().toISOString()}`, admin, execSend)
+  } else if (request.body.type == 'sesame_toggle') {
+    raspi.sesame(`88 ${new Date().toISOString()}`, admin, execSend)
   } else if (request.body.type == 'before_sleep') {
     infrared.beforeSleep(admin, execSend)
   } else if (request.body.type == 'sleep') {
