@@ -40,7 +40,7 @@ async function morning(admin, execSend) {
   await admin.database().ref('/pi/curtain').set(`開け ${new Date().toISOString()}`)
   // await remo(admin, ['bed_room_light_on'])
   await livingSet(admin, execSend)
-  await remo(admin, ['living_2_orange', 'living_2_orange'])
+  await remo(admin, ['living_2_orange', 'bed_room_aircon_power_off', 'living_2_orange'])
 }
 
 async function beforeSleep(admin, execSend) {
